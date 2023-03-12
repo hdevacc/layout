@@ -1,0 +1,228 @@
+*{
+box-sizing: border-box;
+margin: 0;
+padding: 0;
+}
+
+html{
+font-size: 62.5%;
+/* Default font size is 16px, setting it to 62.5% on the html makes it 10px (Too small but that will be fixed later) this makes 1rem = 10px giving an easy to work with size unit */  
+}
+
+body{
+position: relative;
+width: 100%;
+overflow-x: hidden;
+height: auto;
+font-family: sans-serif;
+font-size: 1.6rem;
+/* Restores the default displayed text size to its original 16px */  
+background: black;  
+}
+
+main{
+position: relative;
+width: 100%;
+/* content to fill the screen... */  
+max-width: 180rem;
+/* ...unless screen is very wide (Over 1800px) where it is capped.. */
+margin: 0 auto;
+/* ...and centered if full screen width is not used */ 
+height: auto;
+/* height is left unspecified and determined by content... */  
+min-height: 100vh;
+/* ...but is set to at least fill the screen when content doesn't */  
+display: flex;
+flex-direction: row;
+/* flex means elements will appear side by side */
+flex-wrap:wrap;
+/* but can stack one on top of the other if getting too small - probably unnecessary in your design but handy as a fallback */  
+align-items:stretch; 
+/* If the contents of one side make it shorter than the other it is stretched to fit so both sides are always even height */  
+}
+
+section.left{
+flex:2 0 0;
+/* Left section starts with a basis of zero and a grow of two to take up 2/3 of screen */  
+min-width: min(50rem, 100%);
+/* But has a min-width of 50rem so it doesn't shrink below 500px on smaller screens or browser resizing */  
+}
+
+section.right{
+flex:1 0 0;
+/* Right section starts with a basis of zero and a grow of one to take up 1/3 of screen */  
+min-width: min(30rem, 100%);
+/* But has a min-width of 30rem so it doesn't shrink below 300px on smaller screens or browser resizing */   
+}
+
+/* The min-widths 50rem (500px) / 30rem (300px) mean the flex-wrap option won't come into effect unless the browser shrinks below 800px, so it unlikely to come into effect with what your are designing for but it serves as a fall back for small screens. The values of min (In this case min(50rem, 100%) and min(30rem, 100%)) mean it will take whichever is smaller (the minimum value) so the 50rem and 30rem cause the break point at which it stacks, but if the screen is under these value (eg: at under 500px 50rem won't fit so it adopts the 100% value and just fills the width) */  
+
+/* THE FOLLOWING IS MORE STYLING FOR THE ABOVE TWO ELEMENTS WHICH SHOULD HAVE ALL BEEN DONE TOGETHER FOR TIDY CSS, BUT WAS EASIER JUST TO JUST HAVE SHORT BLOCKS OF CODE FOR EXPLANATORY PURPOSES SHOWING THE INTIAL 2/3 AND 1/3 FLEX STYLING */   
+
+section.left{ 
+background:white;
+display:flex;
+flex-direction:column;
+justify-content:flex-start;
+gap:2rem;
+padding:2rem;
+}
+
+section.right{
+background:lightgrey;
+display:flex;
+flex-direction:column;
+align-items:flex-start;
+gap:1rem;
+padding:2rem;
+}
+
+header{
+display:flex;
+/* For the header there are two side by side items so again flex */
+align-items:center;
+/* Align items center vertically aligns them so if the image is bigger the slogan is vertically center aligned next to it, if the slogan is bigger, eg covers multiple lines the image is vertically centerd next to it */  
+gap:3rem;
+/* gap just puts a gap between them so they are not touching */  
+}
+
+header h1{
+font-size: 4rem;
+color:red;
+}
+
+header .logo{
+position:relative;
+flex:0 0 auto;
+/* flex of 0 0 auto, means it can't grow or shrink and the starting width is defined by the width of the content, and that width of the content will be set shortly */
+height:100%;
+/* height of 100% will be the parent height (in this case <header>) which will be determined its content, in this case the h1 text within it. So this means if the slogan is long enough to span two rows the header will grow to fit that, and in turn the logo image will grow to same height as two lines of text */   
+min-height:6rem;
+/* A min-height stops it shrinking too much if only one line of slogan text, and the text will just vertically center next to it due the flex alignment */   
+aspect-ratio:1/1;
+/* Finally an aspect ratio, this means once the height is set by the text next to it the width is set to be the same as the height, which gives the value for 'auto' as a flex-basis in the first line. Meaning we have a square logo image the same size as the height of the header text - obviously this may need changing depending on theshape of the image */   
+max-width:10%;
+}
+
+header .logo img{
+width:100%;
+height:100%;
+object-fit:contain;
+object-position:center;
+}
+
+/* having created the container for the logo image to resize according to the text it's next to this then fits the image to that size, ittries to be 100% width and height to fill it, but object-fit:contain; stops it overflowing or distorting it will grow until either height or width are 100% then stop, so if your aspect-ratio wasn't exact the logo isn't stretched or cropped */  
+
+.text-box{ 
+border:2px solid black;
+padding:1rem;
+}
+
+.text-box h2,
+.text-box p{
+margin-bottom:1rem;
+}
+
+.table-container{
+position:relative;
+display:flex;
+gap:1rem;
+}
+
+.background-image{
+position:absolute;
+height:100%;
+/* and height of 100%, so the table sets the height and the image just matches it */  
+aspect-ratio:1/1;
+z-index:1;
+}
+
+.background-image img{
+width:100%;
+height:100%;
+object-fit:contain;
+object-position:center;
+/* then as with the logo set the actual image within the image div to be as large as it can without overflowing or stretching */  
+}
+
+.table{
+position:relative;
+z-index:2;
+flex:1 0 auto;
+min-width:fit-content;
+max-width:80rem;
+margin-left:auto;
+/* make the table have a flex of auto and a min-width to fit the content so the five columns always fit and only the image beside it grows or shrinks to fill up the space */
+display: grid;
+/* use a grid to make it look like a table */  
+gap: 0.2rem;
+grid-template-columns: repeat(5, minmax(min(10rem, 100%), 1fr));
+/* Obviously the column layout depends on content but for the example I just assumed five even ones. So the column template repeats five times to getfive columns, minmax means the smallest and widest each column can be, so a max of 1fr (One division of the free room, so the available width is just split evenly between them) and a min of min(10rem, 100%), so a min within the min, they will shrink to 100px wide, but if that is greater than available width (ie: the parent is under 500px, 5 columns of 100px) they will switch to 100% and stack */  
+  
+/* Personally I would let it be as tall as it needs and keep overflow scrolling on the page alone, but if you want to force overflow onto the table give it a max-height to stop it getting too tall, then add overflow-y: auto; so it gets a scrollbar if needed */  
+
+max-height:20rem;
+overflow-y:auto;   
+}
+
+.table > div {
+background:blue;
+padding:0.5rem 1rem;
+color:white;
+display:grid;
+place-items:center;
+}
+
+/* Just some styling of the table contents so it shows up clearly in the demo, the dispaly of grid and place items center just means all the contents of the table are centered horizontally and vertically within their cells */   
+
+section.right .image-container{
+width:100%;
+display:flex;
+gap:1rem;
+}
+
+.image-container button{
+position:relative;
+flex:1 1 0;
+display:flex;
+align-items:center;
+height:10rem;
+padding-left:10rem;
+background:blue;
+}
+
+.image-container button img{
+position:absolute;
+top:0.5rem;
+left:0.5rem;
+width:9rem;
+height:9rem;
+border-radius:0.5rem;
+}
+
+/* For the side by side images just give a flex-basis of 0 and letthem grow evenly */  
+
+
+section.right .text-box img{
+width:50%;
+aspect-ratio:16/9;
+float:right;
+margin:0 0 0.5rem 1rem;
+}
+
+/* For the image within the text there is no need for flex since the text-container it is within is already the flex item, just set a width and use a float so the text wraps around it, then add margins to the sides the text is against, in this case (since it is at the top and floated to the right) the left and bottom sides */  
+
+button{ 
+max-width:fit-content;
+/* cap its growth when the content fits so it isn't full width of the column */ 
+margin-top:auto;
+/* margin-top of auto will mean any free space in this column is used as top margin, so if the left column is taller the button will be at the bottom of the right column rather than immediately below the images */  
+margin-inline:auto;
+/* and margin-inline auto will center it within the column */  
+padding:1rem 2rem;
+border-radius:0.75rem;
+background:orange;
+color:white;
+font-size:2rem;
+border:none;
+}
